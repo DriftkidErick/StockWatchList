@@ -14,7 +14,7 @@ A Spring Boot backend for a stock watchlist application that lets users register
     - current price
     - price change
     - percent change
-- User-specific watchlist access
+- User's-specific watchlist access
 
 ## Tech Stack
 
