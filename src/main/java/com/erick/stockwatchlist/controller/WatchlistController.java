@@ -2,6 +2,7 @@ package com.erick.stockwatchlist.controller;
 
 import com.erick.stockwatchlist.model.WatchlistItem;
 import com.erick.stockwatchlist.service.WatchlistService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,21 +17,16 @@ public class WatchlistController {
         this.watchlistService = watchlistService;
     }
 
-//    Returns all Watchlist items
     @GetMapping
-    public List<WatchlistItem> getWatchlist() {
-        return watchlistService.getWatchlist();
+    public List<WatchlistItem> getWatchlist(Authentication authentication) {
+        String username = authentication.getName();
+        return watchlistService.getWatchlistForUser(username);
     }
 
-//    Returns only the watchlist items for one user.
-    @GetMapping("/user/{userId}")
-    public List<WatchlistItem> getWatchlistByUserId(@PathVariable Long userId) {
-        return watchlistService.getWatchlistByUserId(userId);
-    }
-
-//    Creates a new watchlist item in the database.
     @PostMapping
-    public WatchlistItem createWatchlistItem(@RequestBody WatchlistItem item) {
-        return watchlistService.saveWatchlistItem(item);
+    public WatchlistItem createWatchlistItem(@RequestBody WatchlistItem item,
+                                             Authentication authentication) {
+        String username = authentication.getName();
+        return watchlistService.saveWatchlistItem(item, username);
     }
 }

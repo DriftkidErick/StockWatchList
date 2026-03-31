@@ -1,8 +1,6 @@
 package com.erick.stockwatchlist.controller;
 
 import com.erick.stockwatchlist.model.User;
-import com.erick.stockwatchlist.model.User;
-import com.erick.stockwatchlist.repository.UserRepository;
 import com.erick.stockwatchlist.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +21,9 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user){
-        return userService.saveUser(user);
+    @PostMapping("/register")
+    public User registerUser(@RequestBody User user){
+        return userService.registerUser(user);
     }
 
 }
