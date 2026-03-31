@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.erick.stockwatchlist.model.StockSearchResult;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MarketDataService {
@@ -23,6 +26,32 @@ public class MarketDataService {
     public MarketDataService() {
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
+    }
+
+    public List<StockSearchResult> searchStocks(String query) {
+        try {
+            String url = "https://api.twelvedata.com/symbol_search?symbol=" + query + "&apikey=" + apiKey;
+            String response = restTemplate.getForObject(url, String.class);
+
+            JsonNode root = objectMapper.readTree(response);
+            List<StockSearchResult> results = new ArrayList<>();
+
+            if (root.has("data")) {
+                for (JsonNode item : root.get("data")) {
+                    StockSearchResult result = new StockSearchResult();
+                    result.setSymbol(item.get("symbol").asText());
+                    result.setInstrumentName(item.get("instrument_name").asText());
+                    result.setExchange(item.get("exchange").asText());
+                    result.setCountry(item.get("country").asText());
+
+                    results.add(result);
+                }
+            }
+
+            return results;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to search stocks for query: " + query, e);
+        }
     }
 
 //    Main methof

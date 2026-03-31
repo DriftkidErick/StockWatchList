@@ -31,9 +31,8 @@ public class WatchlistService {
         User user = userService.getUserByUsername(username);
         item.setUser(user);
 
-        //Checks that the ticker isnt already saved
         if (watchlistRepository.findByUserIdAndTickerIgnoreCase(user.getId(), item.getTicker()).isPresent()) {
-            throw new RuntimeException("This ticker is already in your watchlist.");
+            throw new IllegalArgumentException("This ticker is already in your watchlist.");
         }
 
         WatchlistItem savedItem = watchlistRepository.save(item);
@@ -52,6 +51,19 @@ public class WatchlistService {
         }
 
         return items;
+    }
+
+    public void deleteWatchlistItem(Long itemId, String username) {
+        User user = userService.getUserByUsername(username);
+
+        WatchlistItem item = watchlistRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("Watchlist item not found."));
+
+        if (!item.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("You are not allowed to delete this stock.");
+        }
+
+        watchlistRepository.delete(item);
     }
 
 //    This allows the calcualtions to be available during the POST

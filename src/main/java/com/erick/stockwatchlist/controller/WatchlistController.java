@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/watchlist")
+@CrossOrigin(origins = "http://localhost:5173")
 public class WatchlistController {
 
     private final WatchlistService watchlistService;
@@ -28,5 +29,11 @@ public class WatchlistController {
                                              Authentication authentication) {
         String username = authentication.getName();
         return watchlistService.saveWatchlistItem(item, username);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteWatchlistItem(@PathVariable Long id, Authentication authentication) {
+        String username = authentication.getName();
+        watchlistService.deleteWatchlistItem(id, username);
     }
 }
